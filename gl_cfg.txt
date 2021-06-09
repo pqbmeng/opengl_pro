@@ -1,0 +1,6 @@
+$(SolutionDir)gl_dir\include
+
+$(SolutionDir)gl_dir\lib
+
+glew32.lib
+glew32s.lib
