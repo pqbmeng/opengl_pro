@@ -4,6 +4,9 @@
 #include "shader_s.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // const char *vertexShaderSource = "#version 330 core\n"
 // "layout (location = 0) in vec3 aPos;\n"
@@ -116,7 +119,7 @@ void pro7_2_texture_middle::initializeGL()
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+    float borderColor[] = { 0.0f, 0.0f, 1.0f, 0.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -142,6 +145,18 @@ void pro7_2_texture_middle::paintGL()
 	//float greenvalue = (sin(std::time(nullptr)) / 2.0f) + 0.5f;
 	//glUniform4f(glGetUniformLocation(shaderProgram, "ourColor"), 0.0, greenvalue, 0.0f, 1.0f);
 
+
+    {
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        // 译注：下面就是矩阵初始化的一个例子，如果使用的是0.9.9及以上版本
+        // 下面这行代码就需要改为:
+        glm::mat4 trans = glm::mat4(1.0f);
+        // 之后将不再进行提示
+        //glm::mat4 trans;
+        trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+        vec = trans * vec;
+        std::cout << vec.x << vec.y << vec.z << std::endl;
+    }
 
 	glClear(GL_COLOR_BUFFER_BIT);
 

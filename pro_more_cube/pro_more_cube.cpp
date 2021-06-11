@@ -8,6 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <QTime>
+#include <QKeyEvent>
 glm::vec3 cubePositions[] = {
     glm::vec3(0.0f,  0.0f,  0.0f),
     glm::vec3(2.0f,  5.0f, -15.0f),
@@ -20,11 +21,29 @@ glm::vec3 cubePositions[] = {
     glm::vec3(1.5f,  0.2f, -1.5f),
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
+
+namespace
+{
+    // camera
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    const glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    const glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    // timing
+    float deltaTime = 0.0f;	// time between current frame and last frame
+    int lastFrame = 0.0f;
+
+    void printVec3(const glm::vec3 &v)
+    {
+        std::cout << "x: " << v.x << " y: " << v.y << " z: " << v.z << std::endl;
+    }
+}
+
 pro_more_cube::pro_more_cube(QWidget *parent)
 	: QOpenGLWidget(parent)
     , angle{}
 {
-    startTimer(500);
+    startTimer(10);
 }
 
 pro_more_cube::~pro_more_cube()
@@ -153,6 +172,10 @@ void pro_more_cube::paintGL()
 	//float greenvalue = (sin(std::time(nullptr)) / 2.0f) + 0.5f;
 	//glUniform4f(glGetUniformLocation(shaderProgram, "ourColor"), 0.0, greenvalue, 0.0f, 1.0f);
 
+    auto currentFrame = std::time(nullptr);
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -175,7 +198,28 @@ void pro_more_cube::paintGL()
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     //model = glm::rotate(model, QTime::currentTime().second()*glm::radians(-50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+#if 0
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+#elif 0// 使用camera变换观察角度
+    static float sss = 0;
+    float radius = 10.0f;
+    float camX = std::sin(sss) * radius;
+    float camZ = std::cos(sss) * radius;
+    sss+=0.01f;
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+#elif 1 // 通过键盘控制camera角度
+    static int interval = 0;
+    if (0 == interval++ % 10)
+    {
+        std::cout << "cameraPos:" << std::endl;
+        printVec3(cameraPos);
+        std::cout << "target:" << std::endl;
+        printVec3(cameraPos + cameraFront);
+    }
+//     std::cout << "up:" << std::endl;
+//     printVec3(cameraUp);
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+#endif
     projection = glm::perspective(glm::radians(45.0f), (float)width() / height(), 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
     unsigned int viewLoc = glGetUniformLocation(pShader->ID, "view");
@@ -188,8 +232,8 @@ void pro_more_cube::paintGL()
     {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, cubePositions[i]);
-        float angle_ = angle*(i+1);
-        model = glm::rotate(model, glm::radians(angle_), glm::vec3(1.0f, 0.3f, 0.5f));
+        //float angle_ = angle*(i + 1);
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         pShader->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
@@ -210,11 +254,38 @@ void pro_more_cube::mouseMoveEvent(QMouseEvent *event)
 
 void pro_more_cube::timerEvent(QTimerEvent *event)
 {
-    angle += 10;
+    angle += 0.5;
     if (angle > 360)
     {
         angle = 0;
     }
-    repaint();
+    //repaint();
+    update();
     QOpenGLWidget::timerEvent(event);
+}
+
+void pro_more_cube::keyPressEvent(QKeyEvent *event)
+{
+    //float cameraSpeed = 2.5 * deltaTime;
+    float cameraSpeed = 1.2;
+    if (Qt::Key_W == event->key())
+    {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    if (Qt::Key_S == event->key())
+    {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    if (Qt::Key_A == event->key())
+    {
+        auto a = glm::cross(cameraFront, cameraUp);
+        auto b = glm::normalize(a);
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (Qt::Key_D == event->key())
+    {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+
+    base_t::keyPressEvent(event);
 }

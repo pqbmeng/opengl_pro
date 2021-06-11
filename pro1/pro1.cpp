@@ -105,6 +105,11 @@ void pro1::initializeGL()
 
 void pro1::paintGL()
 {
+#pragma region 控制图像在中心且大小不变
+    constexpr auto w = 300;
+    glViewport(width()/2-w/2, height()/2-w/2, w, w);
+#pragma endregion 控制图像在中心且大小不变
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgram);
 	glBindVertexArray(vao);

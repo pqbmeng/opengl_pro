@@ -28,12 +28,14 @@ void pro_transform_perspective_depth::initializeGL()
 	glewInit();
 	pShader = new Shader("transform.vs", "transform.fs");;
     float vertices[] = {
+#if 0
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+#endif
 
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
@@ -49,12 +51,14 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
+#if 0
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+#endif
 
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
@@ -63,12 +67,14 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
+#if 0
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+#endif
     };
 //     unsigned int indices[] = {
 //         0, 1, 3, // first triangle
@@ -163,7 +169,7 @@ void pro_transform_perspective_depth::paintGL()
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, QTime::currentTime().second()*glm::radians(-50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)width() / height(), 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
@@ -172,9 +178,15 @@ void pro_transform_perspective_depth::paintGL()
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
     pShader->setMat4("projection", projection);
 
+#if 0 // 反锯齿
+    glEnable(GL_BLEND);
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#endif
 
 	glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 18);
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -191,7 +203,7 @@ void pro_transform_perspective_depth::mouseMoveEvent(QMouseEvent *event)
 
 void pro_transform_perspective_depth::timerEvent(QTimerEvent *event)
 {
-    angle += 10;
+    angle += 0.5;
     if (angle > 360)
     {
         angle = 0;

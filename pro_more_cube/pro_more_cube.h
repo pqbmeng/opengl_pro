@@ -4,7 +4,10 @@
 class Shader;
 class pro_more_cube : public QOpenGLWidget
 {
-	Q_OBJECT
+    Q_OBJECT
+
+    using base_t = QOpenGLWidget;
+    using my_t = pro_more_cube;
 
 public:
 	pro_more_cube(QWidget *parent = Q_NULLPTR);
@@ -16,6 +19,7 @@ protected:
 	void resizeGL(int w, int h) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
     void timerEvent(QTimerEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
 	int shaderProgram;

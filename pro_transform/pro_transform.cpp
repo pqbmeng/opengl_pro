@@ -116,7 +116,7 @@ void pro_transform::paintGL()
 
     // create transformations
     glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(-0.5f, 0.5f, 0.0f));
+    transform = glm::translate(transform, glm::vec3(-0.5f, -0.5f, 0.0f));
     transform = glm::rotate(transform, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
     transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
     //transform = glm::rotate(transform, (float)QTime::currentTime().second(), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -143,7 +143,7 @@ void pro_transform::mouseMoveEvent(QMouseEvent *event)
 
 void pro_transform::timerEvent(QTimerEvent *event)
 {
-    angle += 10;
+    angle += 3;
     if (angle > 360)
     {
         angle = 0;

@@ -1,4 +1,4 @@
-#include "GL/glew.h"
+﻿#include "GL/glew.h"
 
 #include "pro3.h"
 
@@ -12,7 +12,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0, 0, 1.0f);\n"
+"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
 pro3::pro3(QWidget *parent)
@@ -72,14 +72,14 @@ void pro3::initializeGL()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }
 
 void pro3::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(shaderProgram);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBindVertexArray(vao);
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

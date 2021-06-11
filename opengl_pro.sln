@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pro_transform_perspective_d
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pro_more_cube", "pro_more_cube\pro_more_cube.vcxproj", "{BFBCD4AD-5CED-4FFC-9FB5-9B9D92407D15}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "light_test", "light_test\light_test.vcxproj", "{42BDB454-5B61-4A3B-8CEF-F09C634DA4C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -87,6 +89,10 @@ Global
 		{BFBCD4AD-5CED-4FFC-9FB5-9B9D92407D15}.Debug|x64.Build.0 = Debug|x64
 		{BFBCD4AD-5CED-4FFC-9FB5-9B9D92407D15}.Release|x64.ActiveCfg = Release|x64
 		{BFBCD4AD-5CED-4FFC-9FB5-9B9D92407D15}.Release|x64.Build.0 = Release|x64
+		{42BDB454-5B61-4A3B-8CEF-F09C634DA4C8}.Debug|x64.ActiveCfg = Debug|x64
+		{42BDB454-5B61-4A3B-8CEF-F09C634DA4C8}.Debug|x64.Build.0 = Debug|x64
+		{42BDB454-5B61-4A3B-8CEF-F09C634DA4C8}.Release|x64.ActiveCfg = Release|x64
+		{42BDB454-5B61-4A3B-8CEF-F09C634DA4C8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
