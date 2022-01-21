@@ -202,10 +202,18 @@ void pro_more_cube::paintGL()
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 #elif 0// 使用camera变换观察角度
     static float sss = 0;
+    static float targetPos = 0.f;
     float radius = 10.0f;
     float camX = std::sin(sss) * radius;
     float camZ = std::cos(sss) * radius;
     sss+=0.01f;
+    static int interval = 0;
+    if (0 == interval++ % 10)
+    {
+        std::cout << "(sss): " << (sss) << std::endl;
+        std::cout << "std::sin(sss): " << std::sin(sss) << std::endl;
+        std::cout << "std::cos(sss): " << std::cos(sss) << std::endl;
+    }
     view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 #elif 1 // 通过键盘控制camera角度
     static int interval = 0;
@@ -235,7 +243,7 @@ void pro_more_cube::paintGL()
         //float angle_ = angle*(i + 1);
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         pShader->setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, (0 == i)?18:36);
     }
     
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
