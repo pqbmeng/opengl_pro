@@ -1,0 +1,25 @@
+<UI version="4.0" >
+ <class>pro7_2_texture_middleClass</class>
+ <widget class="QWidget" name="pro7_2_texture_middleClass" >
+  <property name="objectName" >
+   <string notr="true">pro7_2_texture_middleClass</string>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>pro7_2_texture_middle</string>
+  </property>
+ </widget>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources>
+   <include location="pro7_2_texture_middle.qrc"/>
+ </resources>
+ <connections/>
+</UI>
