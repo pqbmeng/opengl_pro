@@ -52,4 +52,12 @@
       <Filter>Resource Files</Filter>
     </QtRcc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="4.1.texture.fs">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="4.1.texture.vs">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

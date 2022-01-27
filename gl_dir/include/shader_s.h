@@ -1,4 +1,4 @@
-#ifndef SHADER_H
+﻿#ifndef SHADER_H
 #define SHADER_H
 
 //#include <glad/glad.h>
@@ -62,15 +62,19 @@ public:
         // 2. compile shaders
         unsigned int vertex, fragment;
         // vertex shader
-        vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, NULL);
-        glCompileShader(vertex);
-        checkCompileErrors(vertex, "VERTEX");
+        {
+            vertex = glCreateShader(GL_VERTEX_SHADER);
+            glShaderSource(vertex, 1, &vShaderCode, NULL);
+            glCompileShader(vertex);
+            checkCompileErrors(vertex, "VERTEX");
+        }
         // fragment Shader
-        fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fShaderCode, NULL);
-        glCompileShader(fragment);
-        checkCompileErrors(fragment, "FRAGMENT");
+        {
+            fragment = glCreateShader(GL_FRAGMENT_SHADER);
+            glShaderSource(fragment, 1, &fShaderCode, NULL);
+            glCompileShader(fragment);
+            checkCompileErrors(fragment, "FRAGMENT");
+        }
         // if geometry shader is given, compile geometry shader
         unsigned int geometry;
         if(geometryPath != nullptr)
@@ -82,18 +86,22 @@ public:
             checkCompileErrors(geometry, "GEOMETRY");
         }
         // shader Program
-        ID = glCreateProgram();
-        glAttachShader(ID, vertex);
-        glAttachShader(ID, fragment);
-        if(geometryPath != nullptr)
-            glAttachShader(ID, geometry);
-        glLinkProgram(ID);
-        checkCompileErrors(ID, "PROGRAM");
+        {
+            ID = glCreateProgram();
+            glAttachShader(ID, vertex);
+            glAttachShader(ID, fragment);
+            if (geometryPath != nullptr)
+                glAttachShader(ID, geometry);
+            glLinkProgram(ID);
+            checkCompileErrors(ID, "PROGRAM");
+        }
         // delete the shaders as they're linked into our program now and no longer necessery
-        glDeleteShader(vertex);
-        glDeleteShader(fragment);
-        if(geometryPath != nullptr)
-            glDeleteShader(geometry);
+        {
+            glDeleteShader(vertex);
+            glDeleteShader(fragment);
+            if (geometryPath != nullptr)
+                glDeleteShader(geometry);
+        }
 
     }
     // activate the shader

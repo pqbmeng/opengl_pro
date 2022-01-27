@@ -14,13 +14,17 @@ protected:
 	void initializeGL() override;
 	void paintGL() override;
 	void resizeGL(int w, int h) override;
+    void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
 	int shaderProgram;
-	unsigned int vao, vbo, ebo;;
+	unsigned int vao, vbo;
 	unsigned int texture0,texture1;
 	Shader* pShader;
-    float angle;
+    float angleH{};
+    float angleV{};
+    QPoint m_pressedPoint{};
+    GLfloat fov{ 45.f };
 };

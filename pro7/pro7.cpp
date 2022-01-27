@@ -38,25 +38,6 @@ pro7::~pro7()
 void pro7::initializeGL()
 {
 	glewInit();
-	/*int vertexShader = glCreateShader(GL_VERTEX_SHADER);*/
-// 	glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-// 	glCompileShader(vertexShader);
-// 	int success{};
-// 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-// 	assert(GL_TRUE == success);
-// 	int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-// 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-// 	glCompileShader(fragmentShader);
-// 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-// 	assert(GL_TRUE == success);
-// 	shaderProgram = glCreateProgram();
-// 	glAttachShader(shaderProgram, vertexShader);
-// 	glAttachShader(shaderProgram, fragmentShader);
-// 	glLinkProgram(shaderProgram);
-// 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-// 	assert(GL_TRUE == success);
-// 	glDeleteShader(vertexShader);
-	/*glDeleteShader(fragmentShader);*/
 
 	//Shader ourShader("4.1.texture.vs", "4.1.texture.fs");
 	p = new Shader("4.1.texture.vs", "4.1.texture.fs");;
@@ -89,7 +70,7 @@ void pro7::initializeGL()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float),(void*)(6*sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	
@@ -109,9 +90,6 @@ void pro7::initializeGL()
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	stbi_image_free(data);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindVertexArray(0);
-
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }
 
