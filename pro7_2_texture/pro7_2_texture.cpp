@@ -1,4 +1,4 @@
-#include "GL/glew.h"
+﻿#include "GL/glew.h"
 #include <ctime>
 #include "pro7_2_texture.h"
 #include "shader_s.h"
@@ -127,18 +127,12 @@ void pro7_2_texture::initializeGL()
 	p->use();
 	glUniform1i(glGetUniformLocation(p->ID, "texture0"), 0);
 	p->setInt("texture1", 1);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindVertexArray(0);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }
 
 void pro7_2_texture::paintGL()
 {
-	//float greenvalue = (sin(std::time(nullptr)) / 2.0f) + 0.5f;
-	//glUniform4f(glGetUniformLocation(shaderProgram, "ourColor"), 0.0, greenvalue, 0.0f, 1.0f);
-
-
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -149,12 +143,6 @@ void pro7_2_texture::paintGL()
 	p->use();
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-// 	glUseProgram(shaderProgram);
-// 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-// 	glBindVertexArray(vao);
-// 	glDrawArrays(GL_TRIANGLES, 0, 3);
-// 	glBindVertexArray(0);
 }
 
 void pro7_2_texture::resizeGL(int w, int h)

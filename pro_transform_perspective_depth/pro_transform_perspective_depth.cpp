@@ -8,10 +8,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <QTime>
+#include <QWheelEvent>
+#include <QDebug>
 
 pro_transform_perspective_depth::pro_transform_perspective_depth(QWidget *parent)
 	: QOpenGLWidget(parent)
-    , angle{}
+    , angleH{}
 {
     startTimer(10);
 }
@@ -20,7 +22,6 @@ pro_transform_perspective_depth::~pro_transform_perspective_depth()
 {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
-	glDeleteBuffers(1, &ebo);
 }
 
 void pro_transform_perspective_depth::initializeGL()
@@ -67,7 +68,7 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-#if 0
+#if 1
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
@@ -76,15 +77,9 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 #endif
     };
-//     unsigned int indices[] = {
-//         0, 1, 3, // first triangle
-//         1, 2, 3  // second triangle
-//     };
-
 	
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
 
 	glBindVertexArray(vao);
 
@@ -100,38 +95,45 @@ void pro_transform_perspective_depth::initializeGL()
 	glEnableVertexAttribArray(1);
 
 	
-	glGenTextures(1, &texture0);
-	glBindTexture(GL_TEXTURE_2D, texture0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    {
+        {
+            glGenTextures(1, &texture0);
+            glBindTexture(GL_TEXTURE_2D, texture0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	int width, height, nrchannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrchannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	stbi_image_free(data);
+            int width, height, nrchannels;
+            stbi_set_flip_vertically_on_load(true);
+            unsigned char* data = stbi_load("container.jpg", &width, &height, &nrchannels, 0);
+            if (data)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            stbi_image_free(data);
+        }
 
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    //float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
-    //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	data = stbi_load("awesomeface.png", &width, &height, &nrchannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	stbi_image_free(data);
+        {
+            glGenTextures(1, &texture1);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            //float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+            //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            int width, height, nrchannels;
+            unsigned char* data = stbi_load("awesomeface.png", &width, &height, &nrchannels, 0);
+            if (data)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            stbi_image_free(data);
+        }
+    }
 
 	pShader->use();
 	glUniform1i(glGetUniformLocation(pShader->ID, "texture0"), 0);
@@ -169,9 +171,18 @@ void pro_transform_perspective_depth::paintGL()
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3{ fov/22,fov / 22,fov / 22 });
+#if 1 // 相机看向Z轴的正方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f), (float)width() / height(), 0.1f, 100.0f);
+#else // 相机看向Z轴的负方向
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, 3.0f));
+    view = glm::rotate(view, glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, 6.0f));
+#endif
+    //projection = glm::perspective(glm::radians(fov), (float)width() / height(), 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(90.f), (float)width() / height(), 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
     unsigned int viewLoc = glGetUniformLocation(pShader->ID, "view");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -186,7 +197,7 @@ void pro_transform_perspective_depth::paintGL()
 #endif
 
 	glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 18);
+    glDrawArrays(GL_TRIANGLES, 0, 6*3*2);
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -195,19 +206,84 @@ void pro_transform_perspective_depth::resizeGL(int w, int h)
 	glViewport(0, 0, w, h);
 }
 
+void pro_transform_perspective_depth::mousePressEvent(QMouseEvent *event)
+{
+    m_pressedPoint = event->pos();
+}
+
 void pro_transform_perspective_depth::mouseMoveEvent(QMouseEvent *event)
 {
+    if (event->buttons().testFlag(Qt::LeftButton))
+    {
+        if ((event->pos().x() > m_pressedPoint.x()))
+        {
+            angleH+=0.5;
+        }
+        else
+        {
+            angleH-=0.5;
+        }
+
+        if (angleH > 360)
+        {
+            angleH = 0;
+        }
+        if (angleH < 0)
+        {
+            angleH = 360;
+        }
+
+        qDebug() << "current angleH: " << angleH;
+    }
+    else if (event->buttons().testFlag(Qt::RightButton))
+    {
+        if ((event->pos().y() > m_pressedPoint.y()))
+        {
+            angleV += 0.5;
+        }
+        else
+        {
+            angleV -= 0.5;
+        }
+
+        if (angleV > 360)
+        {
+            angleV = 0;
+        }
+        if (angleV < 0)
+        {
+            angleV = 360;
+        }
+
+        qDebug() << "current angleV: " << angleV;
+    }
+
 	update();
 	QOpenGLWidget::mouseMoveEvent(event);
 }
 
-void pro_transform_perspective_depth::timerEvent(QTimerEvent *event)
+void pro_transform_perspective_depth::wheelEvent(QWheelEvent *event)
 {
-    angle += 0.5;
-    if (angle > 360)
+    qDebug() <<"----------" << event->delta() << " - " << event->angleDelta() << " - " << event->pixelDelta();
+
+    if (fov >= 1.0f && fov <= 45.0f)
     {
-        angle = 0;
+        if (event->delta() > 0)
+        {
+            fov += 1;
+        }
+        else
+        {
+            fov -= 1;
+        }
     }
-    repaint();
-    QOpenGLWidget::timerEvent(event);
+
+    if (fov <= 1.0f)
+        fov = 1.0f;
+    if (fov >= 45.0f)
+        fov = 45.0f;
+
+    update();
+
+    qDebug() << "current fov: " << fov;
 }
