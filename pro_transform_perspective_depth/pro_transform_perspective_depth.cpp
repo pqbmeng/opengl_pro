@@ -2,15 +2,20 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
 #include <ctime>
-#include "pro_transform_perspective_depth.h"
-#include "shader_s.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 #include <QTime>
 #include <QWheelEvent>
 #include <QDebug>
 #include <QApplication>
+
+#include "pro_transform_perspective_depth.h"
+#include "shader_s.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#include "common.h"
+
 
 pro_transform_perspective_depth::pro_transform_perspective_depth(QWidget *parent)
 	: QOpenGLWidget(parent)
@@ -178,6 +183,15 @@ void pro_transform_perspective_depth::paintGL()
     model = glm::translate(model, glm::vec3{ m_transparentH, 0, 0 });
     model = glm::translate(model, glm::vec3{ 0, m_transparentV, 0 });
     model = glm::scale(model, glm::vec3{ m_scale,m_scale,m_scale });
+
+#if 1 // 神奇
+    glm::vec4 myvec4{ 123,0,40,31 };
+    gl_ns::print(myvec4);
+    gl_ns::print(model);
+    auto r = model * myvec4;
+    gl_ns::print(r);
+    gl_ns::print(glm::inverse(model) * r);
+#endif
 
 #if 1 // 相机看向Z轴的正方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));

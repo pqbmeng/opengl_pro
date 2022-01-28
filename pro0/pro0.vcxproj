@@ -131,6 +131,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\gl_dir\include\common.h" />
     <ClInclude Include="GeneratedFiles\ui_pro0.h" />
   </ItemGroup>
   <ItemGroup>
