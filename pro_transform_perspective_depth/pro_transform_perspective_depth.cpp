@@ -10,12 +10,14 @@
 #include <QTime>
 #include <QWheelEvent>
 #include <QDebug>
+#include <QApplication>
 
 pro_transform_perspective_depth::pro_transform_perspective_depth(QWidget *parent)
 	: QOpenGLWidget(parent)
     , angleH{}
 {
     startTimer(10);
+    reset();
 }
 
 pro_transform_perspective_depth::~pro_transform_perspective_depth()
@@ -171,9 +173,12 @@ void pro_transform_perspective_depth::paintGL()
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::rotate(model, /*QTime::currentTime().second()**/glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3{ fov/22,fov / 22,fov / 22 });
+    model = glm::rotate(model, glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3{ m_transparentH, 0, 0 });
+    model = glm::translate(model, glm::vec3{ 0, m_transparentV, 0 });
+    model = glm::scale(model, glm::vec3{ m_scale,m_scale,m_scale });
+
 #if 1 // 相机看向Z轴的正方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 #else // 相机看向Z轴的负方向
@@ -182,7 +187,7 @@ void pro_transform_perspective_depth::paintGL()
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, 6.0f));
 #endif
     //projection = glm::perspective(glm::radians(fov), (float)width() / height(), 0.1f, 100.0f);
-    projection = glm::perspective(glm::radians(90.f), (float)width() / height(), 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(m_fov), (float)width() / height(), 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
     unsigned int viewLoc = glGetUniformLocation(pShader->ID, "view");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -208,82 +213,141 @@ void pro_transform_perspective_depth::resizeGL(int w, int h)
 
 void pro_transform_perspective_depth::mousePressEvent(QMouseEvent *event)
 {
-    m_pressedPoint = event->pos();
+    m_pressedPoint.reset();
 }
 
 void pro_transform_perspective_depth::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons().testFlag(Qt::LeftButton))
     {
-        if ((event->pos().x() > m_pressedPoint.x()))
+        if (m_pressedPoint)
         {
-            angleH+=0.5;
-        }
-        else
-        {
-            angleH-=0.5;
-        }
+            if ((event->pos().x() > m_pressedPoint->x()))
+            {
+                angleH += 0.5;
+            }
+            else
+            {
+                angleH -= 0.5;
+            }
 
-        if (angleH > 360)
-        {
-            angleH = 0;
-        }
-        if (angleH < 0)
-        {
-            angleH = 360;
+            if (angleH > 360)
+            {
+                angleH = 0;
+            }
+            if (angleH < 0)
+            {
+                angleH = 360;
+            }
         }
 
         qDebug() << "current angleH: " << angleH;
     }
     else if (event->buttons().testFlag(Qt::RightButton))
     {
-        if ((event->pos().y() > m_pressedPoint.y()))
+        if (m_pressedPoint)
         {
-            angleV += 0.5;
-        }
-        else
-        {
-            angleV -= 0.5;
-        }
+            if ((event->pos().y() > m_pressedPoint->y()))
+            {
+                angleV += 0.5;
+            }
+            else
+            {
+                angleV -= 0.5;
+            }
 
-        if (angleV > 360)
-        {
-            angleV = 0;
-        }
-        if (angleV < 0)
-        {
-            angleV = 360;
+            if (angleV > 360)
+            {
+                angleV = 0;
+            }
+            if (angleV < 0)
+            {
+                angleV = 360;
+            }
         }
 
         qDebug() << "current angleV: " << angleV;
     }
 
+    m_pressedPoint.emplace(event->pos());
 	update();
 	QOpenGLWidget::mouseMoveEvent(event);
 }
 
 void pro_transform_perspective_depth::wheelEvent(QWheelEvent *event)
 {
-    qDebug() <<"----------" << event->delta() << " - " << event->angleDelta() << " - " << event->pixelDelta();
+    //qDebug() <<"----------" << event->delta() << " - " << event->angleDelta() << " - " << event->pixelDelta();
 
-    if (fov >= 1.0f && fov <= 45.0f)
+    if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
     {
         if (event->delta() > 0)
         {
-            fov += 1;
+            m_fov += 1;
         }
         else
         {
-            fov -= 1;
+            m_fov -= 1;
         }
+        m_fov = qBound(0.01f, m_fov, 100.f);
+    }
+    else
+    {
+        if (event->delta() > 0)
+        {
+            m_scale -= 0.1;
+        }
+        else
+        {
+            m_scale += 0.1;
+        }
+        m_scale = qBound(0.01f, m_scale, 100.f);
     }
 
-    if (fov <= 1.0f)
-        fov = 1.0f;
-    if (fov >= 45.0f)
-        fov = 45.0f;
+    qDebug() << "current|scale-" << m_scale << "|fov-" << m_fov;
+    update();
+}
+
+void pro_transform_perspective_depth::keyPressEvent(QKeyEvent *event)
+{
+    if (Qt::Key_Left == event->key())
+    {
+        m_transparentH -= 0.1;
+    }
+    if (Qt::Key_Right == event->key())
+    {
+        m_transparentH += 0.1;
+    }
+    if (Qt::Key_Up == event->key())
+    {
+        m_transparentV += 0.1;
+    }
+    if (Qt::Key_Down == event->key())
+    {
+        m_transparentV -= 0.1;
+    }
 
     update();
+    base_t::keyPressEvent(event);
+}
 
-    qDebug() << "current fov: " << fov;
+bool pro_transform_perspective_depth::event(QEvent *e)
+{
+    if (QEvent::MouseButtonDblClick == e->type())
+    {
+        reset();
+        update();
+    }
+
+    return base_t::event(e);
+}
+
+void pro_transform_perspective_depth::reset()
+{
+    angleH = 0;
+    angleV = 0;
+    m_pressedPoint.reset();
+    m_scale = 1.f;
+    m_transparentH = 0;
+    m_transparentV = 0;
+    m_fov = 45.f;
 }
