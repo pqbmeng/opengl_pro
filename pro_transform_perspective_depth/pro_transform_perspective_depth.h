@@ -1,10 +1,16 @@
 ﻿#pragma once
 
+#include "optional.hpp"
+
 #include <QtWidgets/QOpenGLWidget>
 class Shader;
 class pro_transform_perspective_depth : public QOpenGLWidget
 {
 	Q_OBJECT
+
+private:
+    using base_t = QOpenGLWidget;
+    using my_t = pro_transform_perspective_depth;
 
 public:
 	pro_transform_perspective_depth(QWidget *parent = Q_NULLPTR);
@@ -17,6 +23,11 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    bool event(QEvent *e) override;
+
+private:
+    void reset();
 
 private:
 	int shaderProgram;
@@ -25,6 +36,9 @@ private:
 	Shader* pShader;
     float angleH{};
     float angleV{};
-    QPoint m_pressedPoint{};
-    GLfloat fov{ 45.f };
+    nonstd::optional<QPoint> m_pressedPoint{};
+    GLfloat m_scale{ };
+    GLfloat m_transparentH{};
+    GLfloat m_transparentV{};
+    GLfloat m_fov{};
 };
