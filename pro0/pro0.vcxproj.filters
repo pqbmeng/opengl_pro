@@ -71,5 +71,8 @@
     <ClInclude Include="GeneratedFiles\ui_pro0.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\gl_dir\include\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
