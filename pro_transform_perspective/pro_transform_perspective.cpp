@@ -9,12 +9,15 @@
 #include "stb_image.h"
 #include <QTime>
 #include <functional>
+#include <QMouseEvent>
+#include "common.h"
 
 pro_transform_perspective::pro_transform_perspective(QWidget *parent)
 	: QOpenGLWidget(parent)
-    , angle{}
+    //, angle{}
 {
-    startTimer(100);
+    //startTimer(100);
+    reset();
 }
 
 pro_transform_perspective::~pro_transform_perspective()
@@ -128,6 +131,7 @@ void pro_transform_perspective::paintGL()
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     {
+#if 0
         static int rotateAngle = 90;
         static std::function<int()> op;
         if (rotateAngle >= 70)
@@ -141,6 +145,10 @@ void pro_transform_perspective::paintGL()
         rotateAngle = op();
         std::cout << rotateAngle << std::endl;
         model = glm::rotate(model, glm::radians(float(rotateAngle)), glm::vec3(1.0f, 0.0f, 0.0f));
+#else
+        model = glm::rotate(model, glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
+#endif
     }
     
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -161,19 +169,81 @@ void pro_transform_perspective::resizeGL(int w, int h)
 	glViewport(0, 0, w, h);
 }
 
-void pro_transform_perspective::mouseMoveEvent(QMouseEvent *event)
+void pro_transform_perspective::mousePressEvent(QMouseEvent *event)
 {
-	update();
-	QOpenGLWidget::mouseMoveEvent(event);
+    m_pressedPoint.reset();
 }
 
-void pro_transform_perspective::timerEvent(QTimerEvent *event)
+void pro_transform_perspective::mouseMoveEvent(QMouseEvent *event)
 {
-    angle += 10;
-    if (angle > 360)
+    if (event->buttons().testFlag(Qt::LeftButton))
     {
-        angle = 0;
+        if (m_pressedPoint)
+        {
+            if ((event->pos().x() > m_pressedPoint->x()))
+            {
+                angleH += 0.5;
+            }
+            else
+            {
+                angleH -= 0.5;
+            }
+
+            if (angleH > 360)
+            {
+                angleH = 0;
+            }
+            if (angleH < 0)
+            {
+                angleH = 360;
+            }
+        }
+
+        qDebug() << "current angleH: " << angleH;
     }
+    else if (event->buttons().testFlag(Qt::RightButton))
+    {
+        if (m_pressedPoint)
+        {
+            if ((event->pos().y() > m_pressedPoint->y()))
+            {
+                angleV += 0.5;
+            }
+            else
+            {
+                angleV -= 0.5;
+            }
+
+            if (angleV > 360)
+            {
+                angleV = 0;
+            }
+            if (angleV < 0)
+            {
+                angleV = 360;
+            }
+        }
+
+        qDebug() << "current angleV: " << angleV;
+    }
+
+    m_pressedPoint.emplace(event->pos());
     update();
-    QOpenGLWidget::timerEvent(event);
+    QOpenGLWidget::mouseMoveEvent(event);
+}
+
+void pro_transform_perspective::reset()
+{
+    angleH = 0;
+    angleV = 0;
+}
+bool pro_transform_perspective::event(QEvent *e)
+{
+    if (QEvent::MouseButtonDblClick == e->type())
+    {
+        reset();
+        update();
+    }
+
+    return base_t::event(e);
 }
