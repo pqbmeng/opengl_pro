@@ -1,6 +1,10 @@
 ﻿#include "GL/glew.h"
-
+#include "GL/glew.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "pro0.h"
+#include "common.h"
 
 const char *vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -38,6 +42,97 @@ void pro0::initializeGL()
 
 void pro0::paintGL()
 {
+    {
+        {
+            qDebug() << "沿着x轴平移：";
+
+            auto myMat = glm::mat4{ 1.f };
+            //glm::mat4 view = glm::mat4(1.0f);
+            //glm::mat4 projection = glm::mat4(1.0f);
+            //model = glm::rotate(model, glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
+            //model = glm::rotate(model, glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
+            gl_ns::print(myMat);
+            myMat = glm::translate(myMat, glm::vec3{ 0.1, 0, 0 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+
+        {
+            qDebug() << "先向左平移再向右平移：";
+
+            auto myMat = glm::mat4{ 1.f };
+            gl_ns::print(myMat);
+            myMat = glm::translate(myMat, glm::vec3{ 0.1, 0, 0 });
+            gl_ns::print(myMat);
+            myMat = glm::translate(myMat, glm::vec3{ -0.1, 0, 0 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+
+        {
+            qDebug() << "缩放：";
+
+            auto myMat = glm::mat4{ 1.f };
+            //glm::mat4 view = glm::mat4(1.0f);
+            //glm::mat4 projection = glm::mat4(1.0f);
+            //model = glm::rotate(model, glm::radians(angleH), glm::vec3(0.0f, 1.0f, 0.0f));
+            //model = glm::rotate(model, glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
+            gl_ns::print(myMat);
+            myMat = glm::scale(myMat, glm::vec3{ 2 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+
+        {
+            qDebug() << "先放大再缩小：";
+
+            auto myMat = glm::mat4{ 1.f };
+            gl_ns::print(myMat);
+            myMat = glm::scale(myMat, glm::vec3{ 2 });
+            gl_ns::print(myMat);
+            myMat = glm::scale(myMat, glm::vec3{ 0.5 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+
+        {
+            qDebug() << "先平移再缩放：";
+
+            auto myMat = glm::mat4{ 1.f };
+            gl_ns::print(myMat);
+            myMat = glm::translate(myMat, glm::vec3{ 0.1, 0, 0 });
+            gl_ns::print(myMat);
+            myMat = glm::scale(myMat, glm::vec3{ 2 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+
+        {
+            qDebug() << "先缩放再平移：";
+
+            auto myMat = glm::mat4{ 1.f };
+            gl_ns::print(myMat);
+            myMat = glm::scale(myMat, glm::vec3{ 2 });
+            gl_ns::print(myMat);
+            myMat = glm::translate(myMat, glm::vec3{ 0.1, 0, 0 });
+            gl_ns::print(myMat);
+            glm::vec4 mypos{ 1,2,3,1 };
+            gl_ns::print(mypos);
+            gl_ns::print(myMat * mypos);
+        }
+    }
+
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.0, 0.0, 0.0);

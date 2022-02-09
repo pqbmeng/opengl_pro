@@ -75,7 +75,7 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-#if 1
+#if 0
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
@@ -182,9 +182,9 @@ void pro_transform_perspective_depth::paintGL()
     model = glm::rotate(model, glm::radians(angleV), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::translate(model, glm::vec3{ m_transparentH, 0, 0 });
     model = glm::translate(model, glm::vec3{ 0, m_transparentV, 0 });
-    model = glm::scale(model, glm::vec3{ m_scale,m_scale,m_scale });
+    model = glm::scale(model, glm::vec3{ m_scale });
 
-#if 1 // 神奇
+#if 0 // magical
     glm::vec4 myvec4{ 123,0,40,31 };
     gl_ns::print(myvec4);
     gl_ns::print(model);
