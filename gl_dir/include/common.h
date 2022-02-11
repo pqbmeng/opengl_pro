@@ -6,6 +6,13 @@
 #pragma execution_character_set("utf-8")
 namespace gl_ns
 {
+    void print(const glm::vec3 &rVec3)
+    {
+        qDebug() << "glm::vec3";
+        qDebug() << rVec3.x << "\t|" << rVec3.y << "\t|" << rVec3.z;
+        qDebug() << "\n";
+    }
+
     void print(const glm::vec4 &rVec4)
     {
         qDebug() << "glm::vec4";

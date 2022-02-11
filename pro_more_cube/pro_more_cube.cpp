@@ -9,6 +9,8 @@
 #include "stb_image.h"
 #include <QTime>
 #include <QKeyEvent>
+#include <QGuiApplication>
+#include "common.h"
 glm::vec3 cubePositions[] = {
     glm::vec3(0.0f,  0.0f,  0.0f),
     glm::vec3(2.0f,  5.0f, -15.0f),
@@ -28,15 +30,15 @@ namespace
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     const glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     const glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    auto getTartget = []
+    {
+        //return glm::vec3{ 0,0,0 };
+        return cameraPos + cameraFront;
+    };
 
     // timing
     float deltaTime = 0.0f;	// time between current frame and last frame
     int lastFrame = 0.0f;
-
-    void printVec3(const glm::vec3 &v)
-    {
-        std::cout << "x: " << v.x << " y: " << v.y << " z: " << v.z << std::endl;
-    }
 }
 
 pro_more_cube::pro_more_cube(QWidget *parent)
@@ -215,18 +217,8 @@ void pro_more_cube::paintGL()
         std::cout << "std::cos(sss): " << std::cos(sss) << std::endl;
     }
     view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-#elif 1 // 通过键盘控制camera角度
-    static int interval = 0;
-    if (0 == interval++ % 10)
-    {
-        std::cout << "cameraPos:" << std::endl;
-        printVec3(cameraPos);
-        std::cout << "target:" << std::endl;
-        printVec3(cameraPos + cameraFront);
-    }
-//     std::cout << "up:" << std::endl;
-//     printVec3(cameraUp);
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+#else // 通过键盘控制camera角度
+    view = glm::lookAt(cameraPos, ::getTartget(), cameraUp);
 #endif
     projection = glm::perspective(glm::radians(45.0f), (float)width() / height(), 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
@@ -243,9 +235,27 @@ void pro_more_cube::paintGL()
         //float angle_ = angle*(i + 1);
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         pShader->setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, (0 == i)?18:36);
+        if (8 == i)
+        {
+            glDrawArrays(GL_TRIANGLES, 0, (0 == i) ? 18 : 36);
+        }
     }
-    
+
+    {
+        glPointSize(17);
+        glBegin(GL_POINTS);
+        glVertex3f(0, 0, 0);
+        glEnd();
+
+        glLineWidth(1);
+        glBegin(GL_LINES);
+        glColor4ub(255, 0, 0, 255);
+        glVertex2f(-1, -0);
+        glVertex2f(1, 0);
+        glVertex2f(0, 1);
+        glVertex2f(0, -1);
+        glEnd();
+    }
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -262,38 +272,61 @@ void pro_more_cube::mouseMoveEvent(QMouseEvent *event)
 
 void pro_more_cube::timerEvent(QTimerEvent *event)
 {
-    angle += 0.5;
+    //angle += 0.5;
     if (angle > 360)
     {
         angle = 0;
     }
-    //repaint();
     update();
     QOpenGLWidget::timerEvent(event);
 }
 
 void pro_more_cube::keyPressEvent(QKeyEvent *event)
 {
-    //float cameraSpeed = 2.5 * deltaTime;
-    float cameraSpeed = 1.2;
-    if (Qt::Key_W == event->key())
+    float cameraSpeed = 0.05;
+    if (Qt::Key_Up == event->key())
     {
-        cameraPos += cameraSpeed * cameraFront;
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+        {
+            cameraPos.y -= cameraSpeed;
+        }
+        else
+        {
+            cameraPos += cameraSpeed * cameraFront;
+        }
     }
-    if (Qt::Key_S == event->key())
+    if (Qt::Key_Down == event->key())
     {
-        cameraPos -= cameraSpeed * cameraFront;
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+        {
+            cameraPos.y += cameraSpeed;
+        }
+        else
+        {
+            cameraPos -= cameraSpeed * cameraFront;
+        }
     }
-    if (Qt::Key_A == event->key())
+    if (Qt::Key_Right == event->key())
     {
-        auto a = glm::cross(cameraFront, cameraUp);
-        auto b = glm::normalize(a);
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
-    if (Qt::Key_D == event->key())
+    if (Qt::Key_Left == event->key())
     {
+#if 0
+        gl_ns::print(cameraFront);
+        gl_ns::print(cameraUp);
+        gl_ns::print(glm::cross(cameraFront, cameraUp));
+        gl_ns::print(glm::normalize(glm::cross(cameraFront, cameraUp)));
+        gl_ns::print(cameraPos);
+        gl_ns::print(cameraPos + glm::normalize(glm::cross(cameraFront, cameraUp)));
+#endif
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 
+    qDebug() << "cameraPos:";
+    gl_ns::print(cameraPos);
+    qDebug() << "target:";
+    gl_ns::print(::getTartget());
+    update();
     base_t::keyPressEvent(event);
 }
