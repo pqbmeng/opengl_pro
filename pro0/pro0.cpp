@@ -130,6 +130,33 @@ void pro0::paintGL()
             gl_ns::print(mypos);
             gl_ns::print(myMat * mypos);
         }
+
+        {
+            qDebug() << "矩阵相乘：";
+            glm::mat4 matTrans{ 1,0,0,0,  0,1,0,0,  0,0,1,0,  1,2,3,1 };
+            glm::mat4 matScale{ 2,0,0,0,  0,2,0,0,  0,0,2,0,  0,0,0,1 };
+            gl_ns::print(matTrans);
+            gl_ns::print(matScale);
+            gl_ns::print(matTrans * matScale);
+            gl_ns::print(matScale * matTrans); // 矩阵相乘不遵守交换律(Commutative)
+
+            glm::mat4 matTrans_{ 1,0,0,0,  0,1,0,0,  0,0,1,0,  10,20,30,1 };
+            gl_ns::print(matTrans * matTrans_);
+            gl_ns::print(matTrans_ * matTrans); // 俩矩阵都是平移结果相同
+
+            gl_ns::print(matScale*matTrans * matTrans_);
+            gl_ns::print(matScale*(matTrans_ * matTrans));
+            gl_ns::print((matTrans_ * matTrans)*matScale);
+            gl_ns::print(matTrans_ * matTrans*matScale); // 改变优先级不影响结果？？
+            gl_ns::print(glm::inverse(matTrans_ * matTrans*matScale));
+
+            glm::mat4 matRotate{1.f};
+            matRotate = glm::rotate(matRotate, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+            gl_ns::print(matRotate);
+            gl_ns::print(matScale * matTrans * matRotate);
+            gl_ns::print((matScale * matTrans) * matRotate);
+            gl_ns::print(matScale * (matTrans * matRotate)); // 改变优先级不影响结果？？
+        }
     }
 
 

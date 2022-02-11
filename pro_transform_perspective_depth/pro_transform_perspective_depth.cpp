@@ -36,7 +36,7 @@ void pro_transform_perspective_depth::initializeGL()
 	glewInit();
 	pShader = new Shader("transform.vs", "transform.fs");;
     float vertices[] = {
-#if 0
+#if 1 // back
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -45,21 +45,25 @@ void pro_transform_perspective_depth::initializeGL()
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 #endif
 
+#if 1 // front
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+#endif
 
+#if 0 // left
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+#endif
 
-#if 0
+#if 0 // right
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
@@ -68,14 +72,16 @@ void pro_transform_perspective_depth::initializeGL()
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 #endif
 
+#if 0 // bottom
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+#endif
 
-#if 0
+#if 1 // top
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
@@ -193,20 +199,35 @@ void pro_transform_perspective_depth::paintGL()
     gl_ns::print(glm::inverse(model) * r);
 #endif
 
-#if 1 // 相机看向Z轴的正方向
+#if 1 // 使用控制变量
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, m_viewZ));
+#elif 1 // 相机看向Z轴的正方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+#elif 1 // 从顶部看
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view = glm::rotate(view, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
 #else // 相机看向Z轴的负方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, 3.0f));
     view = glm::rotate(view, glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, 6.0f));
 #endif
     //projection = glm::perspective(glm::radians(fov), (float)width() / height(), 0.1f, 100.0f);
-    projection = glm::perspective(glm::radians(m_fov), (float)width() / height(), 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(m_fov), (float)width() / height(), m_nearPlane, m_farPlane);
     unsigned int modelLoc = glGetUniformLocation(pShader->ID, "model");
     unsigned int viewLoc = glGetUniformLocation(pShader->ID, "view");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
     pShader->setMat4("projection", projection);
+
+#if 0 // 打印0点变换后的位置
+    const auto originPos = glm::vec4{ 0.f, 0.f, 0.f, 1.f };
+    qDebug() << "model:";
+    gl_ns::print(model*originPos);
+    qDebug() << "view:";
+    gl_ns::print(view*model*originPos);
+    qDebug() << "projection:";
+    gl_ns::print(projection*view*model*originPos);
+#endif
 
 #if 0 // 反锯齿
     glEnable(GL_BLEND);
@@ -255,7 +276,7 @@ void pro_transform_perspective_depth::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        qDebug() << "current angleH: " << angleH;
+        //qDebug() << "current angleH: " << angleH;
     }
     else if (event->buttons().testFlag(Qt::RightButton))
     {
@@ -280,10 +301,11 @@ void pro_transform_perspective_depth::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        qDebug() << "current angleV: " << angleV;
+        //qDebug() << "current angleV: " << angleV;
     }
 
     m_pressedPoint.emplace(event->pos());
+    print();
 	update();
 	QOpenGLWidget::mouseMoveEvent(event);
 }
@@ -292,7 +314,37 @@ void pro_transform_perspective_depth::wheelEvent(QWheelEvent *event)
 {
     //qDebug() <<"----------" << event->delta() << " - " << event->angleDelta() << " - " << event->pixelDelta();
 
-    if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+    // near plane 和 far plane控制
+    if (QGuiApplication::keyboardModifiers().testFlag(Qt::AltModifier))
+    {
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+        {
+            if (event->delta() > 0)
+            {
+                m_farPlane += 0.1f;
+            }
+            else
+            {
+                m_farPlane -= 0.1f;
+            }
+            m_farPlane = qBound(0.1f, m_farPlane, 100.f);
+        }
+        else
+        {
+            if (event->delta() > 0)
+            {
+                m_nearPlane += 0.1f;
+            }
+            else
+            {
+                m_nearPlane -= 0.1f;
+            }
+            m_nearPlane = qBound(0.1f, m_nearPlane, 100.f);
+        }
+        qDebug() << "m_nearPlane-" << m_nearPlane << "|m_farPlane-" << m_farPlane;
+    }
+    // fov控制
+    else if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
     {
         if (event->delta() > 0)
         {
@@ -303,7 +355,9 @@ void pro_transform_perspective_depth::wheelEvent(QWheelEvent *event)
             m_fov -= 1;
         }
         m_fov = qBound(0.01f, m_fov, 100.f);
+        qDebug() << "fov-" << m_fov;
     }
+    // 缩放控制
     else
     {
         if (event->delta() > 0)
@@ -315,9 +369,9 @@ void pro_transform_perspective_depth::wheelEvent(QWheelEvent *event)
             m_scale += 0.1;
         }
         m_scale = qBound(0.01f, m_scale, 100.f);
+        qDebug() << "scale-" << m_scale;
     }
 
-    qDebug() << "current|scale-" << m_scale << "|fov-" << m_fov;
     update();
 }
 
@@ -325,11 +379,25 @@ void pro_transform_perspective_depth::keyPressEvent(QKeyEvent *event)
 {
     if (Qt::Key_Left == event->key())
     {
-        m_transparentH -= 0.1;
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+        {
+            m_viewZ -= 0.1;
+        }
+        else
+        {
+            m_transparentH -= 0.1;
+        }
     }
     if (Qt::Key_Right == event->key())
     {
-        m_transparentH += 0.1;
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+        {
+            m_viewZ += 0.1;
+        }
+        else
+        {
+            m_transparentH += 0.1;
+        }
     }
     if (Qt::Key_Up == event->key())
     {
@@ -340,6 +408,7 @@ void pro_transform_perspective_depth::keyPressEvent(QKeyEvent *event)
         m_transparentV -= 0.1;
     }
 
+    print();
     update();
     base_t::keyPressEvent(event);
 }
@@ -364,4 +433,20 @@ void pro_transform_perspective_depth::reset()
     m_transparentH = 0;
     m_transparentV = 0;
     m_fov = 45.f;
+    m_nearPlane = 0.1f;
+    m_farPlane = 50.f;
+    m_viewZ = -3.f;
+}
+
+void pro_transform_perspective_depth::print() const
+{
+    qDebug() <<"angleH:"<< angleH 
+        << "|angleV:" << angleV 
+        << "|m_scale:" << m_scale 
+        << "|m_transparentH:" << m_transparentH 
+        << "|m_transparentV:" << m_transparentV 
+        << "|m_fov:" << m_fov 
+        << "|m_nearPlane:" << m_nearPlane 
+        << "|m_farPlane:" << m_farPlane 
+        << "|m_viewZ:" << m_viewZ;
 }

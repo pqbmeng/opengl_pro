@@ -28,6 +28,7 @@ protected:
 
 private:
     void reset();
+    void print() const;
 
 private:
 	int shaderProgram;
@@ -41,4 +42,7 @@ private:
     GLfloat m_transparentH{};
     GLfloat m_transparentV{};
     GLfloat m_fov{};
+    GLfloat m_nearPlane{};
+    GLfloat m_farPlane{};
+    GLfloat m_viewZ{};
 };
