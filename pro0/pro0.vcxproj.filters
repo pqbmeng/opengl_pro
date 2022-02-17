@@ -46,31 +46,23 @@
     <ClCompile Include="pro0.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_pro0.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_pro0.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_pro0.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="pro0.h">
+    <QtMoc Include="pro0.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="pro0.ui">
+    </QtMoc>
+    <QtUic Include="pro0.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="pro0.qrc">
+    </QtUic>
+    <QtRcc Include="pro0.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_pro0.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
     <ClInclude Include="..\gl_dir\include\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
