@@ -199,8 +199,11 @@ void pro_transform_perspective_depth::paintGL()
     gl_ns::print(glm::inverse(model) * r);
 #endif
 
-#if 1 // 使用控制变量
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, m_viewZ));
+#if 0 // 使用控制变量
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, m_viewZ)); // m_vieZ的初始值设置为-3.f
+#elif 1
+    //view = glm::lookAt(glm::vec3(0.0f, 0.0f, m_viewZ), glm::vec3{ 0, 0, 0 }, glm::vec3{ 0,1,0 });
+    view = glm::lookAt(glm::vec3(0.0f, 0.0f, m_viewZ), glm::vec3(0.0f, 0.0f, m_viewZ)+glm::vec3{ 0, 0, -1 }, glm::vec3{ 0,1,0 }); // m_vieZ的初始值设置为3.f
 #elif 1 // 相机看向Z轴的正方向
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 #elif 1 // 从顶部看
@@ -435,7 +438,7 @@ void pro_transform_perspective_depth::reset()
     m_fov = 45.f;
     m_nearPlane = 0.1f;
     m_farPlane = 50.f;
-    m_viewZ = -3.f;
+    m_viewZ = 3.f;
 }
 
 void pro_transform_perspective_depth::print() const

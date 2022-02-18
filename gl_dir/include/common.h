@@ -35,4 +35,9 @@ namespace gl_ns
 
         qDebug() << "\n";
     }
+
+    glm::vec3 vecCross(const glm::vec3 &A, const glm::vec3 &B)
+    {
+        return glm::vec3{ A.y*B.z - A.z*B.y, A.z*B.x - A.x*B.z, A.x*B.y - A.y*B.x };
+    }
 }

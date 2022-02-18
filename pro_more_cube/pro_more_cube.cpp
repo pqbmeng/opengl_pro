@@ -46,6 +46,11 @@ pro_more_cube::pro_more_cube(QWidget *parent)
     , angle{}
 {
     startTimer(10);
+    glm::vec3 v{ 1,0,0 };
+    glm::vec3 k{ 0,1,0 };
+    gl_ns::print(gl_ns::vecCross(v, k));
+    gl_ns::print(gl_ns::vecCross(k, v));
+    gl_ns::print(gl_ns::vecCross(glm::vec3{ 1,0,0 }, glm::vec3{ -1,0,0 }));
 }
 
 pro_more_cube::~pro_more_cube()
@@ -178,7 +183,6 @@ void pro_more_cube::paintGL()
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -308,7 +312,7 @@ void pro_more_cube::keyPressEvent(QKeyEvent *event)
     }
     if (Qt::Key_Right == event->key())
     {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
     if (Qt::Key_Left == event->key())
     {
@@ -320,7 +324,7 @@ void pro_more_cube::keyPressEvent(QKeyEvent *event)
         gl_ns::print(cameraPos);
         gl_ns::print(cameraPos + glm::normalize(glm::cross(cameraFront, cameraUp)));
 #endif
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 
     qDebug() << "cameraPos:";
