@@ -15,12 +15,15 @@ protected:
 	void paintGL() override;
 	void resizeGL(int w, int h) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
 	int shaderProgram;
-	unsigned int vao, vbo, ebo;;
-	unsigned int texture0,texture1;
+	unsigned int vao, vbo/*, ebo;*/;
+	unsigned int texture0;
 	Shader* pShader;
     float angle;
+    float m_rotateY{};
+    float m_rotateX{};
+    float m_rotateZ{};
 };

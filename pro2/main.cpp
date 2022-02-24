@@ -11,6 +11,7 @@
 #include <include/GL/glm/gtx/transform2.hpp>
 #include <include/GL/glm/gtc/type_ptr.hpp>
 
+// https://www.cnblogs.com/bitzhuwei/archive/2016/05/31/5544538.html
 
 #define GL_ERROR() checkForOpenGLError(__FILE__, __LINE__)
 using namespace std;
