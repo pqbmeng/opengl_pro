@@ -34,57 +34,57 @@ void pro_transform::initializeGL()
 	pShader = new Shader("transform.vs", "transform.fs");;
     float vertices[] = {
 #if 1 // back
-        - 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,0.0f,   //左下
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,0.0f,    // 右下
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,     // 右上
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,     // 右上
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f,     // 左上
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,0.0f,    // 左下
 #endif
 
 #if 1 // front
-        - 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
+        - 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,   // 左下
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f,     // 右下
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,1.0f,    // 右上
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,1.0f,   //右上
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,1.0f,  // 左上
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,  // 左下
 #endif
 
 #if 1 // left
-        - 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f, // 上前
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,  // 上后
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f, // 下后
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f, // 下后
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f, // 下前
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f, // 上前
 #endif
 
 #if 1 // right
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,// 上前
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,  // 上后
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f, // 下后
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,  // 下后
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,  // 下前
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f, // 上前
 #endif
 
 #if 1 // bottom
-        - 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f, //  左后
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,0.0f,  // 右后
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f, // 右前
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,1.0f,   // 右前
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,   // 左前
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,0.0f, //  左后
 #endif
 
 #if 1 // top
-        - 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f,  //  左后
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,  // 右后
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,  // 右前
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,1.0f,    // 右前
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,1.0f,  // 左前
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f  //  左后
 #endif
     };
 
@@ -110,8 +110,9 @@ void pro_transform::initializeGL()
 #if 1
     glGenTextures(1, &texture0);
     glBindTexture(GL_TEXTURE_3D, texture0);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -178,14 +179,14 @@ void pro_transform::initializeGL()
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindVertexArray(0);
 #endif
-
+  //  glShadeModel(GL_FLAT);
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 }
-
+const glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
 void pro_transform::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, texture0);
@@ -196,17 +197,24 @@ void pro_transform::paintGL()
     matMolde = glm::rotate(matMolde, glm::radians(m_rotateZ), glm::vec3(0.0, 0.0, 1.0));
 
     glm::mat4 view = glm::mat4(1.0f);
-    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(camPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)width() / height(), 0.1f, 100.0f);
 
 	pShader->use();
+#if 0
     unsigned int transformLoc = glGetUniformLocation(pShader->ID, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection*view*matMolde));
+#endif
+
+    pShader->setMat4("model", matMolde);
+    pShader->setMat4("view", view);
+    pShader->setMat4("projection", projection);
 
     {
-        glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        
+#if 0
         camPos = glm::inverse(matMolde)*glm::uvec4{ camPos , 1 };
 
         qDebug() << "camera in world:";
@@ -215,6 +223,7 @@ void pro_transform::paintGL()
         camPos = { camPos.x / 1/*volumn_w*/ + 0.5,
             camPos.y / 1/*volumn_h*/ + 0.5,
             camPos.z / 1/*volumn_d*/ + 0.5 };
+#endif
 
         qDebug() << "camera in texture:";
         gl_ns::print(camPos);
