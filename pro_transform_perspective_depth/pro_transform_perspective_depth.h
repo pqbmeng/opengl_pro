@@ -39,10 +39,11 @@ private:
     float angleV{};
     nonstd::optional<QPoint> m_pressedPoint{};
     GLfloat m_scale{ };
-    GLfloat m_transparentH{};
-    GLfloat m_transparentV{};
+    GLfloat local_translation_x{};
+    GLfloat local_translation_y{};
+    GLfloat local_translation_z{};
     GLfloat m_fov{};
     GLfloat m_nearPlane{};
     GLfloat m_farPlane{};
-    GLfloat m_viewZ{};
+    GLfloat m_cameraPosZ{};
 };
